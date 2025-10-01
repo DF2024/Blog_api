@@ -2,7 +2,7 @@ import uvicorn
 from routers import auth
 from fastapi import APIRouter, FastAPI, HTTPException, status, Query
 from sqlmodel import select, update
-from models import User, UserBase, UserCreate, UserResponse, PostBase, Post, PostCreate, PostResponse
+from models import User, UserBase, UserLogin, Token, UserCreate, UserResponse, PostBase, Post, PostCreate, PostResponse
 from db import SessionDep
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -34,3 +34,19 @@ async def user_register(
     session.refresh(new_user)
 
     return new_user
+
+@router.post("/login", response_model = Token)
+async def login(
+    user_data : UserLogin,
+    session : SessionDep
+):
+
+    statament = select(User).where(User.username == user_data.username)
+    db_user = session.exec(statament).first()
+
+    if not db_user or not auth.verify_password(user_data.password, db_user.hashed_password):
+        raise HTTPException(status_code = 401, detail = "Credenciales Invalidas")
+    
+    token = auth.create_access_token({"sub": db_user.username})
+
+    return {"access_token": token, "token_type" : "bearer"}

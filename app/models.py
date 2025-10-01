@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, Relationship, Session
-from pydantic import EmailStr
+from pydantic import EmailStr, BaseModel
 from typing import Optional, List
 from enum import Enum
 
@@ -17,18 +17,27 @@ class User(UserBase, table= True):
     ## AQUÍ SE REALIZA LA RELACIÓN CON LA TABLA POST
     posts : List["Post"] = Relationship(back_populates="author")
 
-
 class UserCreate(UserBase):
     password : str
 
 class UserResponse(UserBase):
     id : int
 
+class UserLogin(BaseModel):
+    username : str
+    password : str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 ## POSTS
 
 class PostBase(SQLModel):
     title : str
     content : str
+    author_id : int
 
 class Post(PostBase, table = True):
     id : Optional[int] = Field(default = None, primary_key = True)
