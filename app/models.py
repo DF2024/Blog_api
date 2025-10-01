@@ -6,8 +6,8 @@ from enum import Enum
 ## USUARIOS
 
 class UserBase(SQLModel):
-    username : str = Field(default = True)
-    email : EmailStr = Field(default = True)
+    username : str 
+    email : EmailStr 
     
 
 class User(UserBase, table= True):
