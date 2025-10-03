@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from fastapi.security import HTTPBearer
+from fastapi import HTTPException, status
+
+oauth2_scheme = HTTPBearer()
 
 SECRET_KEY = "secret_key_auth"
 
@@ -27,6 +31,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 def decode_access_token(token : str):
     try: 
-        return jwt.decode(token, SECRET_KEY, algorithm = [ALGORITHM])
+        return jwt.decode(token, SECRET_KEY, algorithms = [ALGORITHM])
     except JWTError:
         return None

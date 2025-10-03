@@ -2,7 +2,7 @@ import uvicorn
 from routers import auth
 from fastapi import APIRouter, FastAPI, HTTPException, status, Query
 from sqlmodel import select, update
-from models import User, UserBase, UserLogin, Token, UserCreate, UserResponse, PostBase, Post, PostCreate, PostResponse
+from models import User, UserLogin, Token, UserCreate, UserResponse
 from db import SessionDep
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -35,6 +35,20 @@ async def user_register(
 
     return new_user
 
+
+@router.get("/users", response_model = list[UserResponse])
+async def users(
+    session : SessionDep
+    ):
+
+    statament = select(User)
+    result = session.exec(statament)
+    tasks = result.all()
+    return tasks
+
+
+
+
 @router.post("/login", response_model = Token)
 async def login(
     user_data : UserLogin,
@@ -50,3 +64,5 @@ async def login(
     token = auth.create_access_token({"sub": db_user.username})
 
     return {"access_token": token, "token_type" : "bearer"}
+
+

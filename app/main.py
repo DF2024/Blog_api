@@ -11,4 +11,4 @@ app = FastAPI(
 )
 
 app.include_router(crud.router)
-# app.include_router(posts.router)
+app.include_router(posts.router)

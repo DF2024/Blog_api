@@ -23,11 +23,11 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id : int
 
-class UserLogin(BaseModel):
+class UserLogin(SQLModel):
     username : str
     password : str
 
-class Token(BaseModel):
+class Token(SQLModel):
     access_token: str
     token_type: str
 
@@ -47,8 +47,9 @@ class Post(PostBase, table = True):
     author : Optional[User] = Relationship(back_populates = "posts" )
 
 
-class PostCreate(PostBase):
-    pass
+class PostCreate(SQLModel):
+    title: str
+    content: str
 
 class PostResponse(PostBase):
     id : int
